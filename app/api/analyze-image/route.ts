@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { supabaseAdmin } from "@/lib/supabaseServerClient";
+// this should work
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
