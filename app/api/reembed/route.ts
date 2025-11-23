@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { supabaseAdmin } from "../../../lib/supabaseServerClient";
+import { supabaseAdmin } from "@/lib/supabaseServerClient";
 
 type PhotoRow = {
   id: string;
