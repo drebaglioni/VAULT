@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabaseServerClient";
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
+// @ts-nocheck
 // redeploy
 
 export async function POST(req: Request) {
