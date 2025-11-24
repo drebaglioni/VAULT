@@ -87,6 +87,12 @@ export default function Home() {
   const [savingEditNote, setSavingEditNote] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [pinnedNoteIds, setPinnedNoteIds] = useState<string[]>([]);
+  const addPhotoIfNew = (photo: Photo) => {
+    setPhotos((prev) => {
+      if (prev.some((p) => p.id === photo.id)) return prev;
+      return [photo, ...prev];
+    });
+  };
   const fileInputRef = useRef<HTMLInputElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -479,7 +485,13 @@ export default function Home() {
       if (error) {
         console.error('Error loading photos:', error);
       } else if (data) {
-        setPhotos(data as Photo[]);
+        const seen = new Set<string>();
+        const unique = (data as Photo[]).filter((p) => {
+          if (seen.has(p.id)) return false;
+          seen.add(p.id);
+          return true;
+        });
+        setPhotos(unique);
         if (data.length) {
           latestCreatedAtRef.current = data[0].created_at;
         }
@@ -518,10 +530,7 @@ export default function Home() {
         { event: 'INSERT', schema: 'public', table: 'photos', filter: `owner_id=eq.${ownerId}` },
         (payload) => {
           const photo = payload.new as Photo;
-          setPhotos((prev) => {
-            if (prev.some((p) => p.id === photo.id)) return prev;
-            return [photo, ...prev];
-          });
+          addPhotoIfNew(photo);
         },
       )
       .on(
@@ -607,11 +616,11 @@ export default function Home() {
       }
 
       if (data && data.length) {
-        setPhotos((prev) => {
-          const existing = new Set(prev.map((p) => p.id));
-          const newOnes = (data as Photo[]).filter((p) => !existing.has(p.id));
-          return [...newOnes, ...prev];
-        });
+        const existing = new Set(photosRef.current.map((p) => p.id));
+        const newOnes = (data as Photo[]).filter((p) => !existing.has(p.id));
+        if (newOnes.length) {
+          setPhotos((prev) => [...newOnes, ...prev]);
+        }
       }
     };
 
@@ -794,7 +803,7 @@ export default function Home() {
         console.error('Error calling analyze-image API:', err);
       }
 
-      setPhotos((prev) => [updatedPhoto, ...prev]);
+      addPhotoIfNew(updatedPhoto);
     } finally {
       form?.reset();
       setUploading(false);
