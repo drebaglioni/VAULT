@@ -3,6 +3,16 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServerClient';
 import { ownerIdForToken } from '@/lib/tokens';
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { status: 200, headers: corsHeaders });
+}
+
 export async function POST(req: Request) {
   try {
     const { imageUrl, sourceUrl, note, ownerId, token } = await req.json();
@@ -10,7 +20,7 @@ export async function POST(req: Request) {
     if (!imageUrl || typeof imageUrl !== 'string') {
       return NextResponse.json(
         { error: 'imageUrl is required' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -22,7 +32,7 @@ export async function POST(req: Request) {
     if (!resolvedOwner) {
       return NextResponse.json(
         { error: 'ownerId or valid token is required' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -32,7 +42,7 @@ export async function POST(req: Request) {
       console.error('Failed to fetch remote image:', imageRes.status);
       return NextResponse.json(
         { error: 'Failed to fetch remote image' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
@@ -59,7 +69,7 @@ export async function POST(req: Request) {
       console.error('Upload error:', uploadError);
       return NextResponse.json(
         { error: 'Error uploading file to storage' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -86,7 +96,7 @@ export async function POST(req: Request) {
       console.error('Insert error:', insertError);
       return NextResponse.json(
         { error: 'Error inserting photo row' },
-        { status: 500 }
+        { status: 500, headers: corsHeaders }
       );
     }
 
@@ -171,13 +181,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { success: true, photo: enrichedPhoto },
-      { status: 200 }
+      { status: 200, headers: corsHeaders }
     );
   } catch (err) {
     console.error('Error in /api/save-remote-photo:', err);
     return NextResponse.json(
       { error: 'Error saving remote photo' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
