@@ -1002,7 +1002,6 @@ export default function Home() {
               const isProcessing =
                 !(photo.tags && photo.tags.length) &&
                 !(photo.caption && photo.caption.trim());
-              const isExtensionSave = Boolean(photo.source_url);
 
               return (
                 <div
@@ -1031,9 +1030,6 @@ export default function Home() {
                     <div className={styles.dateBadge}>
                       {dateFormatterShort.format(new Date(photo.created_at))}
                     </div>
-                    {isExtensionSave && (
-                      <div className={styles.extBadge}>EXT</div>
-                    )}
                     <button
                       type="button"
                       onClick={(e) => {
