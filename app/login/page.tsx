@@ -76,7 +76,7 @@ export default function LoginPage() {
           </label>
 
           <button type="submit" disabled={status === 'sending'} className={styles.submit}>
-            {status === 'sending' ? 'SENDING…' : 'SEND MAGIC LINK'}
+            {status === 'sending' ? 'SENDING…' : status === 'sent' ? 'SENT' : 'SEND MAGIC LINK'}
           </button>
         </form>
 

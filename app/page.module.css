@@ -370,6 +370,20 @@
   opacity: 1;
 }
 
+.extBadge {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 6px 8px 4px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
 .cardImage {
   width: 100%;
   display: block;

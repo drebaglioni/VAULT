@@ -12,6 +12,10 @@
   display: grid;
   place-items: center;
   background-color: var(--surface-soft);
+  background-image:
+    linear-gradient(var(--surface-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--surface-line) 1px, transparent 1px);
+  background-size: 32px 32px;
   color: var(--ink);
   font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, sans-serif;
   text-transform: uppercase;
@@ -34,13 +38,13 @@
 }
 
 .frame {
-  width: min(420px, 100%);
+  width: min(380px, 100%);
   background: var(--surface);
   border: 2px solid var(--ink);
   box-shadow: 10px 10px 0 var(--ink);
   padding: 24px 20px 20px;
   display: grid;
-  gap: 12px;
+  gap: 18px;
   text-align: left;
 }
 
@@ -48,7 +52,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: 6px;
 }
 
 .eyebrow {
@@ -69,7 +73,7 @@
 }
 
 .subtitle {
-  margin: 0;
+  margin: 4px 0 0;
   color: var(--ink);
   font-size: 0.8rem;
   letter-spacing: 0.12em;
@@ -78,7 +82,7 @@
 
 .form {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
 .label {
