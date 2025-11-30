@@ -932,7 +932,7 @@ export default function Home() {
         ) : (
           <div className={styles.grid}>
             {!hasSearch && (
-              <div className={`${styles.card} ${styles.noteCard}`}>
+              <div className={`${styles.card} ${styles.noteCard} ${styles.notePad}`}>
                 <form onSubmit={handleSaveNote} className={styles.noteForm}>
                   <div className={styles.noteLabel}>Notepad</div>
                   <textarea
