@@ -80,12 +80,16 @@ export async function POST(req: Request) {
 
     const publicUrl = publicData.publicUrl;
 
+    // Normalize note
+    const requestedNote =
+      typeof note === 'string' && note.trim().length ? note.trim() : null;
+
     // 4. Insert initial row in photos table
     const { data: inserted, error: insertError } = await supabaseAdmin
       .from('photos')
       .insert({
         image_url: publicUrl,
-        caption: note || null,
+        caption: requestedNote,
         source_url: sourceUrl || null,
         owner_id: resolvedOwner,
       })
@@ -135,9 +139,11 @@ export async function POST(req: Request) {
           embedding,
         } = await analyzeRes.json();
 
+        const captionToUse = caption || requestedNote || null;
+
         enrichedPhoto = {
           ...inserted,
-          caption: note || caption || null,
+          caption: captionToUse,
           tags: tags ?? null,
           colors: colors ?? null,
           content_type: content_type ?? null,
