@@ -102,32 +102,26 @@ export async function POST(req: Request) {
 
     const photoId = inserted.id;
 
-    // 5. Call analyze-image to enrich with caption/tags/colors/embedding
-    const host = req.headers.get('host');
-    const forwardedProto = req.headers.get('x-forwarded-proto');
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-      (host ? `${forwardedProto || 'http'}://${host}` : null) ||
-      'http://localhost:3000';
-
-    const analyzeUrl = new URL('/api/analyze-image', baseUrl).toString();
-
+    // 5. Call analyze-image to enrich with caption/tags/colors/embedding (wait for it)
     let enrichedPhoto = inserted;
-    fetch(analyzeUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageUrl: publicUrl, photoId }),
-    })
-      .then(async (analyzeRes) => {
-        if (!analyzeRes.ok) {
-          console.error(
-            'analyze-image API returned status',
-            analyzeRes.status
-          );
-          return;
-        }
+    try {
+      const host = req.headers.get('host');
+      const forwardedProto = req.headers.get('x-forwarded-proto');
+      const baseUrl =
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+        (host ? `${forwardedProto || 'http'}://${host}` : null) ||
+        'http://localhost:3000';
 
+      const analyzeUrl = new URL('/api/analyze-image', baseUrl).toString();
+
+      const analyzeRes = await fetch(analyzeUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrl: publicUrl, photoId }),
+      });
+
+      if (analyzeRes.ok) {
         const {
           caption,
           tags,
@@ -154,30 +148,36 @@ export async function POST(req: Request) {
           vibe_tags: vibe_tags ?? null,
           embedding: embedding ?? null,
         };
+      } else {
+        console.error('analyze-image API returned status', analyzeRes.status);
+      }
+    } catch (err) {
+      console.error('Error calling analyze-image from save-remote:', err);
+    }
 
-        const { error: updateError } = await supabaseAdmin
-          .from('photos')
-          .update({
-            caption: note || caption, // prefer manual note if provided
-            tags,
-            colors,
-            content_type,
-            domain_tags,
-            has_people,
-            people_count,
-            is_screenshot,
-            vibe_tags,
-            embedding,
-          })
-          .eq('id', photoId);
+    // Always try to persist enriched fields if we have them
+    if (enrichedPhoto !== inserted) {
+      const { caption, tags, colors, content_type, domain_tags, has_people, people_count, is_screenshot, vibe_tags, embedding } = enrichedPhoto;
+      const { error: updateError } = await supabaseAdmin
+        .from('photos')
+        .update({
+          caption,
+          tags,
+          colors,
+          content_type,
+          domain_tags,
+          has_people,
+          people_count,
+          is_screenshot,
+          vibe_tags,
+          embedding,
+        })
+        .eq('id', photoId);
 
-        if (updateError) {
-          console.error('Update error (enrich):', updateError);
-        }
-      })
-      .catch((err) => {
-        console.error('Error calling analyze-image from save-remote:', err);
-      });
+      if (updateError) {
+        console.error('Update error (enrich):', updateError);
+      }
+    }
 
     return NextResponse.json(
       { success: true, photo: enrichedPhoto },
