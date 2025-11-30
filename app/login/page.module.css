@@ -18,8 +18,7 @@
   background-size: 32px 32px;
   color: var(--ink);
   font-family: "Neue Haas Grotesk Display", "Helvetica Neue", Arial, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   padding: 2rem;
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
@@ -42,9 +41,10 @@
   background: var(--surface);
   border: 1px solid var(--ink);
   box-shadow: 6px 6px 0 var(--ink);
-  padding: 28px 24px 24px;
+  padding: 24px 20px 20px;
   display: grid;
-  gap: 18px;
+  gap: 14px;
+  text-align: left;
 }
 
 .header {
@@ -59,6 +59,7 @@
   font-weight: 900;
   letter-spacing: 0.12em;
   line-height: 1;
+  text-transform: uppercase;
 }
 
 .subtitle {
@@ -71,7 +72,7 @@
 
 .form {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .label {
@@ -135,13 +136,11 @@
 
 
 .footer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  display: grid;
+  gap: 6px;
   font-size: 0.75rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   color: var(--ink-soft);
-  flex-wrap: wrap;
 }
 
 .success {
