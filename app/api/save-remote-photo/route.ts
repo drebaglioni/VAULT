@@ -1,10 +1,11 @@
 // app/api/save-remote-photo/route.ts
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseServerClient';
+import { ownerIdForToken } from '@/lib/tokens';
 
 export async function POST(req: Request) {
   try {
-    const { imageUrl, sourceUrl, note, ownerId } = await req.json();
+    const { imageUrl, sourceUrl, note, ownerId, token } = await req.json();
 
     if (!imageUrl || typeof imageUrl !== 'string') {
       return NextResponse.json(
@@ -12,9 +13,15 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    if (!ownerId || typeof ownerId !== 'string') {
+
+    const resolvedOwner =
+      typeof ownerId === 'string' && ownerId.trim().length > 0
+        ? ownerId
+        : ownerIdForToken(token);
+
+    if (!resolvedOwner) {
       return NextResponse.json(
-        { error: 'ownerId is required' },
+        { error: 'ownerId or valid token is required' },
         { status: 400 }
       );
     }
@@ -70,7 +77,7 @@ export async function POST(req: Request) {
         image_url: publicUrl,
         caption: note || null,
         source_url: sourceUrl || null,
-        owner_id: ownerId,
+        owner_id: resolvedOwner,
       })
       .select()
       .single();

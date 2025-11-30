@@ -58,18 +58,19 @@ export default function LoginPage() {
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Your Vault</h1>
+            <p className={styles.subtitle}>Invitation-only access</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <label className={styles.label}>
-            <span>EMAIL</span>
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
+              aria-label="Email"
               className={styles.input}
             />
           </label>
