@@ -58,7 +58,7 @@ export default function LoginPage() {
         <div className={styles.header}>
           <div>
             <h1 className={styles.title}>Your Vault</h1>
-            <p className={styles.subtitle}>Invitation-only access</p>
+            <p className={styles.subtitle}>Private access</p>
           </div>
         </div>
 
@@ -83,9 +83,6 @@ export default function LoginPage() {
         <div className={styles.footer}>
           {status === 'sent' && <span className={styles.success}>Check your email for the link.</span>}
           {error && <span className={styles.error}>{error}</span>}
-          {status === 'idle' && (
-            <span className={styles.hint}>We’ll send a one-time link to your inbox.</span>
-          )}
         </div>
       </div>
     </main>
