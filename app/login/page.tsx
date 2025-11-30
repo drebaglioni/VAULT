@@ -57,6 +57,7 @@ export default function LoginPage() {
       <div className={styles.frame}>
         <div className={styles.header}>
           <div>
+            <div className={styles.eyebrow}>Invite only</div>
             <h1 className={styles.title}>Your Vault</h1>
             <p className={styles.subtitle}>Private access</p>
           </div>
